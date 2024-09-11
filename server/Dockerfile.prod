@@ -13,11 +13,14 @@ RUN npm install
 # Копіюємо весь код у контейнер
 COPY . .
 
-# Встановлюємо nodemon для гарячого перезавантаження
-RUN npm install -g nodemon
+# Збираємо проект (наприклад, з TypeScript в JavaScript)
+RUN npm run build
 
 # Виставляємо порт, на якому буде працювати сервер
 EXPOSE 4000
 
-# Запускаємо сервер у режимі розробки з nodemon
-CMD ["npx", "sequelize-cli", "db:migrate", "--env", "production"] && nodemon src/server.ts
+# Запускаємо міграції
+RUN npx sequelize-cli db:migrate --env production
+
+# Запускаємо сервер
+CMD ["node", "dist/server.js"]
