@@ -1,26 +1,8 @@
-version: '3.9'
+version: '3.8'
 
 services:
-  app:
-    build:
-      context: ./server
-      dockerfile: Dockerfile.prod  # Використовуємо продакшн Dockerfile
-    command: >
-      sh -c "npx sequelize-cli db:migrate --env production && npm start"
-    ports:
-      - "4000:4000"
-    environment:
-      - PORT=4000
-      - DB_HOST=db
-      - DB_USER=admin
-      - DB_PASSWORD=root
-      - DB_NAME=time_craft_db
-    depends_on:
-      - db
-
   db:
     image: postgres:14
-    restart: always  # Забезпечує перезапуск бази даних у разі збою
     ports:
       - "5432:5432"
     environment:
@@ -30,14 +12,45 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  app:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.prod
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: 4000
+      DB_USER: admin
+      DB_PASSWORD: root
+      DB_NAME: time_craft_db
+      DB_HOST: db
+      DB_PORT: 5432
+    depends_on:
+      - db
+
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.prod  # Використовуємо продакшн Dockerfile
+      dockerfile: Dockerfile.prod
     ports:
-      - "80:80"  # Продакшн сервер зазвичай працює на порту 80
+      - "5173:5173"
     depends_on:
       - app
+
+  migrate:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.prod
+    command: npx sequelize-cli db:migrate --env production
+    environment:
+      PORT: 4000
+      DB_USER: admin
+      DB_PASSWORD: root
+      DB_NAME: time_craft_db
+      DB_HOST: db
+      DB_PORT: 5432
+    depends_on:
+      - db
 
 volumes:
   postgres_data:

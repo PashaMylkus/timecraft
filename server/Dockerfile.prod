@@ -19,8 +19,5 @@ RUN npm run build
 # Виставляємо порт, на якому буде працювати сервер
 EXPOSE 4000
 
-# Запускаємо міграції
-RUN npx sequelize-cli db:migrate --env production
-
 # Запускаємо сервер
 CMD ["node", "dist/server.js"]
