@@ -20,4 +20,4 @@ RUN npm install -g nodemon
 EXPOSE 4000
 
 # Запускаємо сервер у режимі розробки з nodemon
-CMD ["nodemon", "src/server.ts"]
+CMD ["npx", "sequelize-cli", "db:migrate", "--env", "production"] && nodemon src/server.ts

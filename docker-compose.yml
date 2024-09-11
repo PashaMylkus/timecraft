@@ -5,6 +5,8 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile.prod  # Використовуємо продакшн Dockerfile
+    command: >
+      sh -c "npx sequelize-cli db:migrate --env production && npm start"
     ports:
       - "4000:4000"
     environment:
