@@ -19,4 +19,4 @@ docker-compose --project-name $PROJECT_NAME rm -f
 docker-compose --project-name $PROJECT_NAME pull
 
 # Піднімаємо сервіси в фоновому режимі і будуємо образи заново
-docker-compose --project-name $PROJECT_NAME up --build
+docker-compose  --project-name $PROJECT_NAME up --build

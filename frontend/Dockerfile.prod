@@ -1,0 +1,25 @@
+# Базовий образ для Node.js
+FROM node:18 AS build
+
+# Встановлюємо робочу директорію
+WORKDIR /usr/src/app
+
+# Копіюємо файли для встановлення залежностей
+COPY package*.json ./
+
+# Встановлюємо залежності
+RUN npm install
+
+# Копіюємо код і збираємо продакшн-збірку
+COPY . .
+RUN npm run build
+
+# Використовуємо базовий образ nginx для віддачі статичних файлів
+FROM nginx:alpine
+COPY --from=build /usr/src/app/dist /usr/share/nginx/html
+
+# Виставляємо порт
+EXPOSE 80
+
+# Запускаємо nginx
+CMD ["nginx", "-g", "daemon off;"]

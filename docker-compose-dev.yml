@@ -4,21 +4,19 @@ services:
   app:
     build:
       context: ./server
-      dockerfile: Dockerfile.prod  # Використовуємо продакшн Dockerfile
+      dockerfile: Dockerfile.dev
     ports:
       - "4000:4000"
     environment:
       - PORT=4000
-      - DB_HOST=db
-      - DB_USER=admin
-      - DB_PASSWORD=root
-      - DB_NAME=time_craft_db
+    volumes:
+      - ./server:/usr/src/app
+      - /usr/src/app/node_modules
     depends_on:
       - db
 
   db:
     image: postgres:14
-    restart: always  # Забезпечує перезапуск бази даних у разі збою
     ports:
       - "5432:5432"
     environment:
@@ -31,11 +29,20 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.prod  # Використовуємо продакшн Dockerfile
+      dockerfile: Dockerfile.dev
     ports:
-      - "80:80"  # Продакшн сервер зазвичай працює на порту 80
+      - "5173:5173"
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
     depends_on:
       - app
-
+  pgadmin:
+      image: dpage/pgadmin4
+      ports:
+        - "5050:80"
+      environment:
+        PGADMIN_DEFAULT_EMAIL: admin@admin.com
+        PGADMIN_DEFAULT_PASSWORD: admin
 volumes:
   postgres_data:
