@@ -12,8 +12,6 @@ services:
     volumes:
       - ./server:/usr/src/app
       - /usr/src/app/node_modules
-    depends_on:
-      - frontend
 
   frontend:
     build:
@@ -26,13 +24,5 @@ services:
       - /usr/src/app/node_modules
     depends_on:
       - app
-      
-  pgadmin:
-    image: dpage/pgadmin4
-    ports:
-      - "5050:80"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
 volumes:
   postgres_data:

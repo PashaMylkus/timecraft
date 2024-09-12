@@ -6,10 +6,10 @@ export const createUser = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { name, email, password } = req.body;
+  const { name, password } = req.body;
 
-  if (!name || !email || !password) {
-    res.status(400).json({ message: "Name, email, and password are required" });
+  if (!name || !password) {
+    res.status(400).json({ message: "Name, and password are required" });
     return;
   }
 
@@ -18,8 +18,8 @@ export const createUser = async (
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     const result = await pool.query(
-      "INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *",
-      [name, email, hashedPassword]
+      "INSERT INTO users (name, password) VALUES ($1, $2) RETURNING *",
+      [name, hashedPassword]
     );
 
     const user = result.rows[0];
